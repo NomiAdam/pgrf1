@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author adamk
  * @version 2017
- * @see Renderer
+ * @see LineRenderer
  */
 public class CircleRenderer extends Renderer {
     private List<Point> points = new ArrayList<>();
@@ -22,10 +22,10 @@ public class CircleRenderer extends Renderer {
     private int startingAngleX;
     private int startingAngleY;
 
-    private int angleAlfa;  //Calculated angle from mouse position
-    private double angleBeta;  //Final starting angle point
+    private int alfa;  //Calculated angle from mouse position
+    private double beta;  //Final starting angle point
 
-    private int angle;  //Final výseč angle
+    private int finalAngle;  //Final výseč angle
 
     private Boolean vysec = false;
 
@@ -34,30 +34,31 @@ public class CircleRenderer extends Renderer {
         lr = new LineRenderer(img);
     }
 
+    /**
+     * Metoda pro výkreslení kružnice
+     */
     public void drawCircle() {
 
         if (!vysec) {
-            angle = 360;
-            angleBeta = 0;
+            finalAngle = 360;
+            beta = 0;
             borderX = borderX - centerX;
             borderY = borderY - centerY;
         } else if (vysec) {
-            angleBeta = getAngle();
-            angle = angleAlfa + (int) Math.toDegrees(getAngle());
+            beta = getStartingAngle();
+            finalAngle = alfa + (int) Math.toDegrees(getStartingAngle());
         }
 
         int r = (int) Math.sqrt((borderX * borderX) + (borderY * borderY));
 
-        //TODO somehow change this to r/10 or something like that so it wont be number like this
-        double alfa = 0.025;
-
-        for (double fi = angleBeta; fi <= Math.PI / 180 * angle; fi += alfa) {  // Pí/180 * 160 Převod stupňu na radiány se kterými počítá sin a cos
+        // Pí/180 * 160 Převod stupňu na radiány se kterými počítá sin a cos
+        for (double fi = beta; fi <= Math.PI / 180 * finalAngle; fi += 0.025) {
 
             double x = r * Math.cos(fi);
             double y = r * Math.sin(fi);
 
-            int int_x = (int) Math.round(x) + centerX;
-            int int_y = (int) Math.round(y) + centerY;
+            int int_x = (int) Math.round(x + centerX);
+            int int_y = (int) Math.round(y + centerY);
 
             points.add(new Point(int_x, int_y));
         }
@@ -84,23 +85,42 @@ public class CircleRenderer extends Renderer {
         vysec = false;
     }
 
+    /**
+     * Metoda pro nastavení počátečního úhlu pří kreslení výseče
+     *
+     * @param x
+     * @param y
+     */
     public void setStartingAngle(int x, int y) {
         this.startingAngleX = x;
         this.startingAngleY = y;
         vysec = true;
     }
 
+    /**
+     * Přetížená metoda pro vynulování počátečního úhlu pří ukončení kresby výseče
+     */
     public void setStartingAngle() {
         this.startingAngleX = 0;
         this.startingAngleY = 0;
         vysec = false;
     }
 
-    //TODO I DONT WANT TO HAVE FI AS ANGLE BUT AS RADIAN
-    private double getAngle() {
+    /**
+     * Výpočet počátečního úhlu vůči středu kružnice
+     *
+     * @return radians
+     */
+    private double getStartingAngle() {
         return Math.atan2(startingAngleY - centerY, startingAngleX - centerX);
     }
 
+    /**
+     * Nastavení koncového úhlu vůči počátečnímu úhlu
+     *
+     * @param x
+     * @param y
+     */
     public void setAngle(int x, int y) {
         int point1X = x;
         int point1Y = y;
@@ -109,9 +129,9 @@ public class CircleRenderer extends Renderer {
         int point2Y = startingAngleY;
 
         if ((point2X > point1X)) {
-            angleAlfa = (int) (Math.atan2((point2X - point1X), (point1Y - point2Y)) * 180 / Math.PI);
+            alfa = (int) (Math.atan2((point2X - point1X), (point1Y - point2Y)) * 180 / Math.PI);
         } else if ((point2X < point1X)) {
-            angleAlfa = (int) (360 - (Math.atan2((point1X - point2X), (point1Y - point2Y)) * 180 / Math.PI));
+            alfa = (int) (360 - (Math.atan2((point1X - point2X), (point1Y - point2Y)) * 180 / Math.PI));
         }
     }
 }

@@ -7,6 +7,7 @@ import java.util.List;
  *
  * @author Adam Kvasnička
  * @version 2017
+ * @see LineRenderer
  */
 public class PolygonRenderer extends Renderer {
     private LineRenderer lr;
@@ -17,6 +18,8 @@ public class PolygonRenderer extends Renderer {
     }
 
     /**
+     * Vykreslení polygonu pomocí bodů obsažených ve vstupním parametru
+     *
      * @param points
      */
     public void drawPolygon(List<Point> points) {

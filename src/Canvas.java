@@ -7,10 +7,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
 /**
  * trida pro kresleni na platno: zobrazeni pixelu
@@ -75,8 +72,17 @@ public class Canvas {
                 } else if (e.getKeyCode() == 99) {
                     selectedImage = 2;
                     frame.setTitle("Kružnice");
+                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    System.out.println("Ahoj");
+                    //TODO Change text
+                    JOptionPane.showMessageDialog(frame, "Pro vykreslení kružnice: po prvním kliku se vykreslí celá kružnice" +
+                            "po druhém kliku se od místa kliknutí začne vykreslovat výseč", "Vykreslení kružnice", JOptionPane.INFORMATION_MESSAGE);
                 }
+                //TODO Make this more clear
+                points.clear();
+                lines.clear();
                 clear();
+                panel.repaint();
             }
         };
 
@@ -136,6 +142,7 @@ public class Canvas {
                         } else if (vysec) {
                             cr.setAngle(x2, y2);
                             cr.drawCircle();
+                            //TODO make line better
                             lr.setColor(0xba1a1a);
                             lr.draw(x1, x2, y1, y2);
                         }
@@ -194,7 +201,7 @@ public class Canvas {
         gr.setColor(new Color(0x2f2f2f));
         gr.fillRect(0, 0, img.getWidth(), img.getHeight());
         gr.setColor(new Color(0xffff00));
-        gr.drawString("Press: 1 - for lines, 2 - for polygon, 3 - for circle", 5, img.getHeight() - 5);
+        gr.drawString("Press: 1 - for lines, 2 - for polygon, 3 - for circle (pro nápovědu stiskněte ENTER)", 5, img.getHeight() - 5);
     }
 
     public void present(Graphics graphics) {
