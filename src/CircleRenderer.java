@@ -57,8 +57,8 @@ public class CircleRenderer extends Renderer {
             double x = r * Math.cos(fi);
             double y = r * Math.sin(fi);
 
-            int int_x = (int) Math.round(x + centerX);
-            int int_y = (int) Math.round(y + centerY);
+            int int_x = (int) Math.round(x + centerX + 0.5);
+            int int_y = (int) Math.round(y + centerY + 0.5);
 
             points.add(new Point(int_x, int_y));
         }
@@ -83,6 +83,10 @@ public class CircleRenderer extends Renderer {
         this.centerX = x;
         this.centerY = y;
         vysec = false;
+    }
+
+    public Point getCenter() {
+        return new Point(centerX, centerY);
     }
 
     /**

@@ -21,6 +21,10 @@ public class Canvas {
     private JPanel panel;
     private BufferedImage img;
 
+    private static final int YELLOW_COLOR = 0xffff00;
+    private static final int RED_COLOR = 0xff0000;
+    private static final int GREEN_COLOR = 0x00ff00;
+
     private LineRenderer lr;
     private CircleRenderer cr;
     private PolygonRenderer pr;
@@ -29,7 +33,7 @@ public class Canvas {
     private int x2;
     private int y1;
     private int y2;
-    private int selectedImage;
+    private int imageType;
 
     private Boolean vysec = false;
 
@@ -64,23 +68,19 @@ public class Canvas {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 97) {
-                    selectedImage = 0;
-                    frame.setTitle("Přímka");
+                    imageType = 0;
+                    points.clear();
                 } else if (e.getKeyCode() == 98) {
-                    selectedImage = 1;
-                    frame.setTitle("Polygon");
+                    imageType = 1;
+                    lines.clear();
                 } else if (e.getKeyCode() == 99) {
-                    selectedImage = 2;
-                    frame.setTitle("Kružnice");
+                    imageType = 2;
                 } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     System.out.println("Ahoj");
                     //TODO Change text
                     JOptionPane.showMessageDialog(frame, "Pro vykreslení kružnice: po prvním kliku se vykreslí celá kružnice" +
                             "po druhém kliku se od místa kliknutí začne vykreslovat výseč", "Vykreslení kružnice", JOptionPane.INFORMATION_MESSAGE);
                 }
-                //TODO Make this more clear
-                points.clear();
-                lines.clear();
                 clear();
                 panel.repaint();
             }
@@ -91,7 +91,7 @@ public class Canvas {
             public void mousePressed(MouseEvent e) {
                 x1 = e.getX();
                 y1 = e.getY();
-                switch (selectedImage) {
+                switch (imageType) {
                     case 0:
                         lines.add(new Point(x1, y1));
                         break;
@@ -116,20 +116,20 @@ public class Canvas {
                 x2 = e.getX();
                 y2 = e.getY();
 
-                switch (selectedImage) {
+                switch (imageType) {
                     case 0:
                         lr.reDraw(lines);
-                        lr.setColor(0xba1a1a);
+                        lr.setColor(RED_COLOR);
                         lr.draw(x1, x2, y1, y2);
                         break;
                     case 1:
                         //Draw polygon
-                        lr.setColor(0xba1a1a);
+                        lr.setColor(RED_COLOR);
                         //First line
                         if (points.size() > 1) {
                             lr.draw((int) points.get(points.size() - 1).getX(), x2, (int) points.get(points.size() - 1).getY(), y2);
                         }
-                        lr.setColor(0x00000ff);
+                        lr.setColor(GREEN_COLOR);
                         lr.draw((int) points.get(0).getX(), x2, (int) points.get(0).getY(), y2);
                         pr.drawPolygon(points);
                         break;
@@ -137,18 +137,17 @@ public class Canvas {
                         if (!vysec) {
                             cr.setBorder(x2, y2);
                             cr.drawCircle();
-                            lr.setColor(0xba1a1a);
+                            lr.setColor(RED_COLOR);
                             lr.draw(x1, x2, y1, y2);
                         } else if (vysec) {
                             cr.setAngle(x2, y2);
                             cr.drawCircle();
-                            //TODO make line better
-                            lr.setColor(0xba1a1a);
+                            lr.setColor(GREEN_COLOR);
                             lr.draw(x1, x2, y1, y2);
                         }
                         break;
                 }
-                lr.setColor(0xffff00);
+                lr.setColor(YELLOW_COLOR);
                 panel.repaint();
             }
 
@@ -157,7 +156,7 @@ public class Canvas {
                 clear();
                 x2 = e.getX();
                 y2 = e.getY();
-                switch (selectedImage) {
+                switch (imageType) {
                     case 0:
                         lines.add(new Point(x2, y2));
                         lr.reDraw(lines);
@@ -173,7 +172,6 @@ public class Canvas {
                             cr.drawCircle();
                             vysec = true;
                         } else if (vysec) {
-                            lr.setColor(0x00ffff);
                             cr.drawCircle();
                             cr.setStartingAngle();
                             vysec = false;
@@ -200,7 +198,7 @@ public class Canvas {
         Graphics gr = img.getGraphics();
         gr.setColor(new Color(0x2f2f2f));
         gr.fillRect(0, 0, img.getWidth(), img.getHeight());
-        gr.setColor(new Color(0xffff00));
+        gr.setColor(new Color(YELLOW_COLOR));
         gr.drawString("Press: 1 - for lines, 2 - for polygon, 3 - for circle (pro nápovědu stiskněte ENTER)", 5, img.getHeight() - 5);
     }
 

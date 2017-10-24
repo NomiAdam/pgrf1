@@ -58,7 +58,7 @@ public class LineRenderer extends Renderer {
             double k = dy / dx;
 
             for (int i = x1; i <= x2; i++) {
-                int intY = (int) Math.round(y);
+                int intY = (int) Math.round(y + 0.5);
                 drawPixel(i, intY);
                 y += k;
             }
@@ -80,7 +80,7 @@ public class LineRenderer extends Renderer {
             double k = dx / dy;
 
             for (int i = y1; i <= y2; i++) {
-                int intX = (int) Math.round(x);
+                int intX = (int) Math.round(x + 0.5);
                 drawPixel(intX, i);
                 x += k;
             }
