@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Potomek třídy Renderer pro kreslení kružnice
+ * Trida pro vykresleni kruznice
  *
- * @author adamk
+ * @author Adam Kvasnicka
  * @version 2017
- * @see LineRenderer
  */
 public class CircleRenderer extends Renderer {
-    private List<Point> points = new ArrayList<>();
+    private List<Point> points;
     private LineRenderer lr;
 
     private int centerX;
@@ -21,38 +20,40 @@ public class CircleRenderer extends Renderer {
 
     private int startingAngleX;
     private int startingAngleY;
+    private int computedAngle;  //Uhel vypocteny z pozice mysi
+    private double initialAngle;  //Pocatecni uhel
+    private int finalAngle;  //Koncovy uhel
 
-    private int alfa;  //Calculated angle from mouse position
-    private double beta;  //Final starting angle point
-
-    private int finalAngle;  //Final výseč angle
-
-    private Boolean vysec = false;
+    private boolean circleSector;
 
     public CircleRenderer(BufferedImage img) {
         super(img);
+        points = new ArrayList<>();
         lr = new LineRenderer(img);
     }
 
     /**
-     * Metoda pro výkreslení kružnice
+     * Metoda pro vykresleni kruznice
      */
     public void drawCircle() {
 
-        if (!vysec) {
+        if (!circleSector) {
+            //Nastaveni koncoveho uhlu a vypocet hranicnich pri kresleni cele kruznice
             finalAngle = 360;
-            beta = 0;
+            initialAngle = 0;
             borderX = borderX - centerX;
             borderY = borderY - centerY;
-        } else if (vysec) {
-            beta = getStartingAngle();
-            finalAngle = alfa + (int) Math.toDegrees(getStartingAngle());
+        } else {
+            //Nastaveni pocatecniho uhlu a koncoveho uhlu pri kresleni vysece
+            initialAngle = getStartingAngle();
+            finalAngle = computedAngle + (int) Math.toDegrees(getStartingAngle());
         }
 
         int r = (int) Math.sqrt((borderX * borderX) + (borderY * borderY));
+        // Pi/180 * stupne - Prevod stupnu na radiany
+        double angle = Math.PI / 180 * finalAngle;
 
-        // Pí/180 * 160 Převod stupňu na radiány se kterými počítá sin a cos
-        for (double fi = beta; fi <= Math.PI / 180 * finalAngle; fi += 0.025) {
+        for (double fi = initialAngle; fi <= angle; fi += 0.025) {
 
             double x = r * Math.cos(fi);
             double y = r * Math.sin(fi);
@@ -74,44 +75,52 @@ public class CircleRenderer extends Renderer {
         points.clear();
     }
 
+    /**
+     * Nastaveni hranicnich bodu
+     *
+     * @param x
+     * @param y
+     */
     public void setBorder(int x, int y) {
         this.borderX = x;
         this.borderY = y;
     }
 
-    public void setCenter(int x, int y) {
-        this.centerX = x;
-        this.centerY = y;
-        vysec = false;
-    }
-
-    public Point getCenter() {
-        return new Point(centerX, centerY);
-    }
-
     /**
-     * Metoda pro nastavení počátečního úhlu pří kreslení výseče
+     * Nastaveni stredoveho bodu
      *
      * @param x
      * @param y
      */
-    public void setStartingAngle(int x, int y) {
+    public void setCenter(int x, int y) {
+        this.centerX = x;
+        this.centerY = y;
+        circleSector = false;
+    }
+
+    /**
+     * Metoda pro nastaveni pocatecnich bodu pri vykresleni vysece
+     *
+     * @param x
+     * @param y
+     */
+    public void setStartingAnglePoints(int x, int y) {
         this.startingAngleX = x;
         this.startingAngleY = y;
-        vysec = true;
+        circleSector = true;
     }
 
     /**
-     * Přetížená metoda pro vynulování počátečního úhlu pří ukončení kresby výseče
+     * Pretizena metoda pro vynulovani pocatecnich bodu pri ukonceni kresby vysece
      */
-    public void setStartingAngle() {
+    public void setStartingAnglePoints() {
         this.startingAngleX = 0;
         this.startingAngleY = 0;
-        vysec = false;
+        circleSector = false;
     }
 
     /**
-     * Výpočet počátečního úhlu vůči středu kružnice
+     * Vypocet pocatecniho uhlu vuci stredu kruznice
      *
      * @return radians
      */
@@ -120,7 +129,7 @@ public class CircleRenderer extends Renderer {
     }
 
     /**
-     * Nastavení koncového úhlu vůči počátečnímu úhlu
+     * Vypocet koncoveho uhlu vuci pocatecnim bodum pri vykresleni vysece
      *
      * @param x
      * @param y
@@ -133,9 +142,9 @@ public class CircleRenderer extends Renderer {
         int point2Y = startingAngleY;
 
         if ((point2X > point1X)) {
-            alfa = (int) (Math.atan2((point2X - point1X), (point1Y - point2Y)) * 180 / Math.PI);
+            computedAngle = (int) (Math.atan2((point2X - point1X), (point1Y - point2Y)) * 180 / Math.PI);
         } else if ((point2X < point1X)) {
-            alfa = (int) (360 - (Math.atan2((point1X - point2X), (point1Y - point2Y)) * 180 / Math.PI));
+            computedAngle = (int) (360 - (Math.atan2((point1X - point2X), (point1Y - point2Y)) * 180 / Math.PI));
         }
     }
 }

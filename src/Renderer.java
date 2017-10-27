@@ -1,9 +1,9 @@
 import java.awt.image.BufferedImage;
 
 /**
- * Abstraktní třída Renderer
+ * Abstraktni trida Renderer
  *
- * @author adamk
+ * @author Adam Kvasnicka
  * @version 2017
  */
 public abstract class Renderer {

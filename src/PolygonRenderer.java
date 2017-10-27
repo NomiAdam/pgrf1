@@ -3,11 +3,10 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 /**
- * Třída pro vykreslení polygonu za pomoci spojování bodů
+ * Trida pro vykresleni polygonu
  *
- * @author Adam Kvasnička
+ * @author Adam Kvasnicka
  * @version 2017
- * @see LineRenderer
  */
 public class PolygonRenderer extends Renderer {
     private LineRenderer lr;
@@ -18,7 +17,7 @@ public class PolygonRenderer extends Renderer {
     }
 
     /**
-     * Vykreslení polygonu pomocí bodů obsažených ve vstupním parametru
+     * Vykresleni polygonu pomoci kolekce bodu
      *
      * @param points
      */

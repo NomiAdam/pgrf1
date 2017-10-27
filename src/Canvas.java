@@ -10,7 +10,7 @@ import java.util.List;
 import javax.swing.*;
 
 /**
- * trida pro kresleni na platno: zobrazeni pixelu
+ * trida pro kresleni na platno
  *
  * @author PGRF FIM UHK
  * @version 2017
@@ -21,38 +21,40 @@ public class Canvas {
     private JPanel panel;
     private BufferedImage img;
 
-    private static final int YELLOW_COLOR = 0xffff00;
-    private static final int RED_COLOR = 0xff0000;
-    private static final int GREEN_COLOR = 0x00ff00;
-
     private LineRenderer lr;
     private CircleRenderer cr;
     private PolygonRenderer pr;
+
+    private static final int YELLOW_COLOR = 0xffff00;
+    private static final int RED_COLOR = 0xff0000;
+    private static final int GREEN_COLOR = 0x00ff00;
 
     private int x1;
     private int x2;
     private int y1;
     private int y2;
     private int imageType;
+    private boolean circleSector;
 
-    private Boolean vysec = false;
-
-    private List<Point> points = new ArrayList<>();
-    private List<Point> lines = new ArrayList<>();
+    private List<Point> points;
+    private List<Point> lines;
 
     public Canvas(int width, int height) {
         frame = new JFrame();
 
         frame.setLayout(new BorderLayout());
-        frame.setTitle("UHK FIM PGRF : " + this.getClass().getName());
+        frame.setTitle("UHK FIM PGRF1 - Adam Kvasnička");
         frame.setResizable(false);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
         lr = new LineRenderer(img);
-        cr = new CircleRenderer(img);
         pr = new PolygonRenderer(img);
+        cr = new CircleRenderer(img);
+
+        points = new ArrayList<>();
+        lines = new ArrayList<>();
 
         panel = new JPanel() {
             private static final long serialVersionUID = 1L;
@@ -69,17 +71,21 @@ public class Canvas {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 97) {
                     imageType = 0;
-                    points.clear();
+                    lines.clear();
                 } else if (e.getKeyCode() == 98) {
                     imageType = 1;
-                    lines.clear();
+                    points.clear();
                 } else if (e.getKeyCode() == 99) {
                     imageType = 2;
                 } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    System.out.println("Ahoj");
-                    //TODO Change text
-                    JOptionPane.showMessageDialog(frame, "Pro vykreslení kružnice: po prvním kliku se vykreslí celá kružnice" +
-                            "po druhém kliku se od místa kliknutí začne vykreslovat výseč", "Vykreslení kružnice", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            frame,
+                            "Pro vykreslení kružnice:" +
+                                    "\nPo prvním kliku a následném tažení myši po plátně se začne vykreslovat kružnice s proměným poloměrem R." +
+                                    "\nPo druhém kliku a následném tažení myši po plátně se od místa kliku začne vykreslovat výseč kružnice",
+                            "Vykreslení kružnice",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
                 }
                 clear();
                 panel.repaint();
@@ -101,10 +107,10 @@ public class Canvas {
                         }
                         break;
                     case 2:
-                        if (!vysec) {
+                        if (!circleSector) {
                             cr.setCenter(x1, y1);
-                        } else if (vysec) {
-                            cr.setStartingAngle(x1, y1);
+                        } else if (circleSector) {
+                            cr.setStartingAnglePoints(x1, y1);
                         }
                         break;
                 }
@@ -123,23 +129,21 @@ public class Canvas {
                         lr.draw(x1, x2, y1, y2);
                         break;
                     case 1:
-                        //Draw polygon
-                        lr.setColor(RED_COLOR);
-                        //First line
+                        lr.setColor(GREEN_COLOR);
                         if (points.size() > 1) {
                             lr.draw((int) points.get(points.size() - 1).getX(), x2, (int) points.get(points.size() - 1).getY(), y2);
                         }
-                        lr.setColor(GREEN_COLOR);
+                        lr.setColor(RED_COLOR);
                         lr.draw((int) points.get(0).getX(), x2, (int) points.get(0).getY(), y2);
                         pr.drawPolygon(points);
                         break;
                     case 2:
-                        if (!vysec) {
+                        if (!circleSector) {
                             cr.setBorder(x2, y2);
                             cr.drawCircle();
                             lr.setColor(RED_COLOR);
                             lr.draw(x1, x2, y1, y2);
-                        } else if (vysec) {
+                        } else {
                             cr.setAngle(x2, y2);
                             cr.drawCircle();
                             lr.setColor(GREEN_COLOR);
@@ -163,18 +167,17 @@ public class Canvas {
                         break;
                     case 1:
                         points.add(new Point(x2, y2));
-                        points.add(new Point(x2, y2));
                         pr.drawPolygon(points);
                         break;
                     case 2:
-                        if (!vysec) {
+                        if (!circleSector) {
                             cr.setBorder(x2, y2);
                             cr.drawCircle();
-                            vysec = true;
-                        } else if (vysec) {
+                            circleSector = true;
+                        } else {
                             cr.drawCircle();
-                            cr.setStartingAngle();
-                            vysec = false;
+                            cr.setStartingAnglePoints();
+                            circleSector = false;
                         }
                         break;
                 }
@@ -199,7 +202,7 @@ public class Canvas {
         gr.setColor(new Color(0x2f2f2f));
         gr.fillRect(0, 0, img.getWidth(), img.getHeight());
         gr.setColor(new Color(YELLOW_COLOR));
-        gr.drawString("Press: 1 - for lines, 2 - for polygon, 3 - for circle (pro nápovědu stiskněte ENTER)", 5, img.getHeight() - 5);
+        gr.drawString("Press: 1 - for lines, 2 - for polygon, 3 - for circle (press ENTER for help)", 5, img.getHeight() - 5);
     }
 
     public void present(Graphics graphics) {

@@ -3,11 +3,10 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 /**
- * Potomek třídy Renderer pro vykreslení čar
+ * Trida pro vykresleni usecky
  *
- * @author adamk
+ * @author Adam Kvasnicka
  * @version 2017
- * @see Renderer
  */
 public class LineRenderer extends Renderer {
     private int color;
@@ -18,7 +17,7 @@ public class LineRenderer extends Renderer {
     }
 
     /**
-     * Modifikátor barvy
+     * Modifikator barvy
      *
      * @param color
      */
@@ -27,22 +26,22 @@ public class LineRenderer extends Renderer {
     }
 
     /**
-     * Metoda pro vykreslení čáry
+     * Metoda pro vykresleni usecky
      *
-     * @param x1 počáteční bod X
-     * @param x2 koncový bod X
-     * @param y1 počáteční bod Y
-     * @param y2 koncový bod Y
+     * @param x1 pocatecni bod X
+     * @param x2 koncovy bod X
+     * @param y1 pocatecni bod Y
+     * @param y2 koncovy bod Y
      */
     public void draw(int x1, int x2, int y1, int y2) {
 
-        //Delta X a Y pro výpočet směrnice K
+        //Delta X a Y pro vypocet smernice K
         double dx = x2 - x1;
         double dy = y2 - y1;
 
         if (Math.abs((int) dy) <= Math.abs((int) dx)) {
 
-            //Výměna koncových bodů
+            //Vymena koncovych bodu
             if (x2 < x1) {
                 int slave = x1;
                 x1 = x2;
@@ -53,7 +52,7 @@ public class LineRenderer extends Renderer {
                 y2 = slave;
             }
 
-            //Výpočet podle řidící osy X
+            //Vypočet podle ridici osy X
             double y = y1;
             double k = dy / dx;
 
@@ -75,7 +74,7 @@ public class LineRenderer extends Renderer {
                 y2 = slave;
             }
 
-            //Výpočet podle řidící osy Y
+            //Vypocet podle ridici osy Y
             double x = x1;
             double k = dx / dy;
 
@@ -87,6 +86,12 @@ public class LineRenderer extends Renderer {
         }
     }
 
+    /**
+     * Kontrola zdali se bod nachazi na platne
+     *
+     * @param x
+     * @param y
+     */
     private void drawPixel(int x, int y) {
         if (x > 0 && x < img.getWidth() && y > 0 && y < img.getHeight()) {
             img.setRGB(x, y, color);
@@ -94,9 +99,7 @@ public class LineRenderer extends Renderer {
     }
 
     /**
-     * Metoda pro překreslení čar pomocí bodů
-     * Iterujeme o 2 protože chceme vykreslit dvojici bodů
-     * V případě iterace o jednu se budou body spojovat
+     * Metoda pro prekresleni usecek pomoci kolekce bodu
      *
      * @param points
      */
