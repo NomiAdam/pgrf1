@@ -1,3 +1,5 @@
+package model;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -63,13 +65,26 @@ public class CircleRenderer extends Renderer {
 
             points.add(new Point(int_x, int_y));
         }
+        linkPoints();
+    }
 
+    /**
+     * Metoda pro spojeni kazdeho bodu kruznice useckami
+     */
+    public void linkPoints() {
         int x1, x2, y1, y2;
         for (int i = 0; i < points.size() - 1; i++) {
             x1 = (int) points.get(i).getX();
             x2 = (int) points.get(i + 1).getX();
             y1 = (int) points.get(i).getY();
             y2 = (int) points.get(i + 1).getY();
+            lr.draw(x1, x2, y1, y2);
+        }
+        if (!circleSector) {
+            x1 = (int) points.get(0).getX();
+            y1 = (int) points.get(0).getY();
+            x2 = (int) points.get(points.size() - 1).getX();
+            y2 = (int) points.get(points.size() - 1).getY();
             lr.draw(x1, x2, y1, y2);
         }
         points.clear();

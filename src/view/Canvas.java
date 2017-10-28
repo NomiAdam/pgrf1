@@ -1,3 +1,9 @@
+package view;
+
+import model.CircleRenderer;
+import model.LineRenderer;
+import model.PolygonRenderer;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -69,13 +75,13 @@ public class Canvas {
         KeyAdapter key = new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == 97) {
+                if (e.getKeyCode() == KeyEvent.VK_L) {
                     imageType = 0;
                     lines.clear();
-                } else if (e.getKeyCode() == 98) {
+                } else if (e.getKeyCode() == KeyEvent.VK_P) {
                     imageType = 1;
                     points.clear();
-                } else if (e.getKeyCode() == 99) {
+                } else if (e.getKeyCode() == KeyEvent.VK_C) {
                     imageType = 2;
                 } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     JOptionPane.showMessageDialog(
@@ -109,7 +115,7 @@ public class Canvas {
                     case 2:
                         if (!circleSector) {
                             cr.setCenter(x1, y1);
-                        } else if (circleSector) {
+                        } else {
                             cr.setStartingAnglePoints(x1, y1);
                         }
                         break;
@@ -202,7 +208,7 @@ public class Canvas {
         gr.setColor(new Color(0x2f2f2f));
         gr.fillRect(0, 0, img.getWidth(), img.getHeight());
         gr.setColor(new Color(YELLOW_COLOR));
-        gr.drawString("Press: 1 - for lines, 2 - for polygon, 3 - for circle (press ENTER for help)", 5, img.getHeight() - 5);
+        gr.drawString("Press: L - for lines, P - for polygon, C - for circle (press ENTER for help)", 5, img.getHeight() - 5);
     }
 
     public void present(Graphics graphics) {
@@ -214,7 +220,4 @@ public class Canvas {
         panel.repaint();
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Canvas(640, 480).start());
-    }
 }
